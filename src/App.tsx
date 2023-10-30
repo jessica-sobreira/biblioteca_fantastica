@@ -139,7 +139,7 @@ function App() {
     }
   }
 
-  const h1Ref = useRef(null);
+  const h1Ref = useRef();
 
   function showAddBookForm() {
     h1Ref.current.scrollIntoView({ behavior: 'smooth' });
