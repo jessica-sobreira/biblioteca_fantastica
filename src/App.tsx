@@ -139,12 +139,14 @@ function App() {
     }
   }
 
-  const h1Ref = useRef();
+ const h1Ref = useRef<HTMLHeadingElement | null>(null);
 
-  function showAddBookForm() {
+function showAddBookForm() {
+  if (h1Ref.current) {
     h1Ref.current.scrollIntoView({ behavior: 'smooth' });
   }
-
+}
+  
   return (
     <>
     <header>
