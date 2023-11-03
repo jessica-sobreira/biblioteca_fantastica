@@ -31,57 +31,91 @@ function App() {
   const [registrationDate, setRegistrationDate] = useState('');
   const [genre, setGenre] = useState('');
   const [description, setDescription] = useState('');
-
-
+  const [editMode, setEditMode] = useState(false);
+  const [disabledFields, setDisabledFields] = useState(false);
 
   function deleteValueInput() {
+    if (!editMode) {
+      setTitle('');
+      setAuthor('');
+      setPublicationYear('');
+      setRegistrationDate('');
+      setGenre('');
+      setDescription('');
+    }
+  }
+
+  function addBook() {
+  if (editMode) {
+    const updatedBooks = books.map((book) =>
+      book.id === editMode
+        ? { ...book, title, author, publicationYear, registrationDate, genre, description }
+        : book
+    );
+
+    setBooks(updatedBooks);
+    setEditMode(false);
+    alert('Livro editado com sucesso!');
+    } else {
+      const newBook = {
+        id: books.length + 1,
+        title,
+        author,
+        publicationYear,
+        registrationDate,
+        genre,
+        description,
+      };
+
+       if (!newBook.title || !newBook.author || !newBook.publicationYear || !newBook.registrationDate || !newBook.genre || !newBook.description) {
+        alert('Por favor, preencha todos os campos.');
+        return;
+      }
+
+      const currentDateTime = new Date();
+      const registration = new Date(newBook.registrationDate);
+
+      if (registration > currentDateTime) {
+        alert('A data de registro não pode estar no futuro.');
+        return;
+      }
+
+      const currentYear = new Date().getFullYear();
+      if (parseInt(newBook.publicationYear) > currentYear) {
+        alert('O ano de publicação não pode estar no futuro.');
+        return;
+      }
+
+      setBooks([...books, newBook]);
+      alert('Livro adicionado com sucesso!');
+    }
+
     setTitle('');
     setAuthor('');
     setPublicationYear('');
     setRegistrationDate('');
     setGenre('');
     setDescription('');
+  } 
+
+  function editBook(id: number) {
+    showAddBookForm();
+
+    setEditMode(id);
+
+    const existingBook = books.find((book) => book.id === id);
+
+    if (existingBook) {
+      setTitle(existingBook.title);
+      setAuthor(existingBook.author);
+      setPublicationYear(existingBook.publicationYear);
+      setRegistrationDate(existingBook.registrationDate);
+      setGenre(existingBook.genre);
+      setDescription(existingBook.description);
+  
+      setDisabledFields(true);
+    }
   }
-
-  function addBook() {
-    const newBook = {
-      id: books.length + 1,
-      title,
-      author,
-      publicationYear,
-      registrationDate,
-      genre,
-      description,
-    };
-
-    if (!newBook.title || !newBook.author || !newBook.publicationYear || !newBook.registrationDate || !newBook.genre || !newBook.description) {
-      alert('Por favor, preencha todos os campos.');
-      return;
-    }
-  
-    const currentDateTime = new Date();
-    const registration = new Date(newBook.registrationDate);
-  
-  
-    if (registration > currentDateTime) {
-      alert('A data de registro não pode estar no futuro.');
-      return;
-    }
-  
-     const currentYear = new Date().getFullYear();
-     if (parseInt(newBook.publicationYear) > currentYear) {
-       alert('O ano de publicação não pode estar no futuro.');
-       return;
-     }
-  
-   
-    setBooks([...books, newBook]);
-    alert('Livro adicionado com sucesso!');
-    
-
-    
-  
-    }
   
 
   function listBooks() {
@@ -109,25 +143,6 @@ function App() {
 
   }
 
-  function editBook(id: number) {
-    showAddBookForm()
-    const existingBook = books.find(book => book.id === id);
-    
-    if (existingBook) {
-      setTitle(existingBook.title);
-      setAuthor(existingBook.author);
-      setPublicationYear(existingBook.publicationYear);
-      setRegistrationDate(existingBook.registrationDate); 
-      setGenre(existingBook.genre);
-      setDescription(existingBook.description);
-  
-   
-      setDisabledFields(true);
-    }
-  }
-
-  const [disabledFields, setDisabledFields] = useState(false);
-
 
 
   function deleteBook(id: number) {
@@ -141,7 +156,7 @@ function App() {
 
  const h1Ref = useRef<HTMLHeadingElement | null>(null);
 
-function showAddBookForm() {
+ function showAddBookForm() {
   if (h1Ref.current) {
     h1Ref.current.scrollIntoView({ behavior: 'smooth' });
   }
