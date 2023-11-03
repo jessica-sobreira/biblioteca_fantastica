@@ -28,10 +28,10 @@ function App() {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [publicationYear, setPublicationYear] = useState('');
-  const [registrationDate, setRegistrationDate] = useState('');
+  const [registrationDate, setRegistrationDate] = useState<string>('');
   const [genre, setGenre] = useState('');
   const [description, setDescription] = useState('');
-  const [editMode, setEditMode] = useState(false);
+  const [editMode, setEditMode] = useState<number | false>(false);
   const [disabledFields, setDisabledFields] = useState(false);
 
   function deleteValueInput() {
@@ -46,7 +46,7 @@ function App() {
   }
 
   function addBook() {
-  if (editMode) {
+  if (editMode !== false) { 
     const updatedBooks = books.map((book) =>
       book.id === editMode
         ? { ...book, title, author, publicationYear, registrationDate, genre, description }
@@ -242,14 +242,15 @@ function App() {
         />
       </label>
       <label>
-        Data de Registro:
-        <input
-          type="date"
-          name="registrationDate"
-          value={registrationDate}
-          onChange={(e) => setRegistrationDate(e.target.value)}
-          disabled={disabledFields}
-        />
+      Data de Registro:
+      <input
+       type="date"
+       name="registrationDate"
+       value={registrationDate}
+       onChange={(e) => setRegistrationDate(e.target.value)}
+       disabled={disabledFields}
+       />
+      </label>
       </label>
       <label>
         Gênero:
